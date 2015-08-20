@@ -1,0 +1,37 @@
+#!/bin/bash
+
+mkdir -p out
+
+printf "Enter the servers FQDN (e.g. myserver.iwi.unibe.ch): "
+while read FQDN; do
+    if [[ $FQDN =~ ^(\*\.)?([a-z-]+\.)+[a-z-]+$ ]]; then
+	break
+    else
+	echo "  Wrong format! Please try again.."
+	printf "Enter the servers FQDN (e.g. myserver.iwi.unibe.ch): "
+    fi
+done
+
+echo "You've entered : $FQDN"
+
+#printf "Enter your organization name: [Universitaet Bern] "
+
+#read ORGNAME
+
+#[ -z $ORGNAME ] && ORGNAME="Universitaet Bern"
+
+#echo $ORGNAME
+
+#SUBJ="/CN=$FQDN/subjectAltName=DNS:$FQDN,URI:http:\\/\\/$FQDN\\/shibboleth"
+
+sed "s/### FQDN ###/$FQDN/g" < self-cert.cnf > $FQDN.cnf
+
+openssl \
+    req \
+    -x509 \
+    -newkey rsa:2048 \
+    -keyout $FQDN.key \
+    -out $FQDN.crt \
+    -nodes \
+    -config $FQDN.cnf \
+    -days 1096

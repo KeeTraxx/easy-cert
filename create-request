@@ -1,0 +1,53 @@
+#!/bin/bash
+
+mkdir -p out
+
+printf "Enter the servers FQDN (e.g. myserver.iwi.unibe.ch): "
+while read FQDN; do
+    if [[ $FQDN =~ ^(\*\.)?([a-z-]+\.)+[a-z-]+$ ]]; then
+	break
+    else
+	echo "  Wrong format! Please try again.."
+	printf "Enter the servers FQDN (e.g. myserver.iwi.unibe.ch): "
+    fi
+done
+
+echo "You've entered : $FQDN"
+
+printf "Enter your organization name (ORGNAME): [Universitaet Bern] "
+read ORGNAME
+[ -z $ORGNAME ] && ORGNAME="Universitaet Bern"
+echo $ORGNAME
+
+printf "Enter your Country (C): [CH] "
+read COUNTRY
+[ -z $COUNTRY ] && COUNTRY="Universitaet Bern"
+echo $COUNTRY
+
+
+printf "Enter a domain ALIAS (e.g. *.myserver.iwi.unibe.ch): "
+ALTNAMES="DNS:$FQDN"
+while read INPUT; do
+    if [ -z $INPUT ]; then
+	echo "break?"
+	break
+    else
+	if [[ $INPUT =~ ^(\*\.)?([a-z-]+\.)+[a-z-]+$ ]]; then
+	    ALTNAMES="$ALTNAMES,DNS:$INPUT"
+	    echo "Added DNS:$INPUT"
+	else 
+	    echo "Wrong format!"
+	fi
+
+	printf "Enter another domain ALIAS (e.g. myserver2.iwi.unibe.ch): "
+    fi
+done
+sed "s/### FQDN ###/$FQDN/g; s/### ORGNAME ###/$ORGNAME/g; s/### ALTNAMES ###/$ALTNAMES/g; s/### COUNTRY ###/$COUNTRY/g" < request.cnf > $FQDN.cnf
+
+openssl req \
+    -new \
+    -nodes \
+    -keyout "$FQDN.key" \
+    -config $FQDN.cnf \
+    -out "$FQDN.csr"
+

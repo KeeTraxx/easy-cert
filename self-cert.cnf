@@ -1,0 +1,19 @@
+[req]
+RANDFILE=/dev/urandom
+default_bits=2048
+default_md=sha1
+distinguished_name=dn
+# PrintableStrings only
+string_mask=MASK:0002
+prompt=no
+x509_extensions=ext
+
+default_keyfile=### FQDN ###.pem
+
+[dn]
+CN=### FQDN ###
+
+[ext]
+subjectAltName = DNS:### FQDN ###, \
+                 URI:http://### FQDN ###/shibboleth
+subjectKeyIdentifier=hash
