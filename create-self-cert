@@ -24,14 +24,14 @@ echo "You've entered : $FQDN"
 
 #SUBJ="/CN=$FQDN/subjectAltName=DNS:$FQDN,URI:http:\\/\\/$FQDN\\/shibboleth"
 
-sed "s/### FQDN ###/$FQDN/g" < self-cert.cnf > $FQDN.cnf
+sed "s/### FQDN ###/$FQDN/g" < self-cert.cnf > out/$FQDN.cnf
 
 openssl \
     req \
     -x509 \
     -newkey rsa:2048 \
-    -keyout $FQDN.key \
-    -out $FQDN.crt \
+    -keyout "out/$FQDN.key" \
+    -out "out/$FQDN.crt" \
     -nodes \
-    -config $FQDN.cnf \
+    -config "out/$FQDN.cnf" \
     -days 1096
