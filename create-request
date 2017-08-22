@@ -2,30 +2,39 @@
 
 mkdir -p out
 
-printf "Enter the servers FQDN (e.g. myserver.iwi.unibe.ch): "
+printf "Enter the servers FQDN (e.g. myserver.com): "
 while read FQDN; do
     if [[ $FQDN =~ ^(\*\.)?([a-z-]+\.)+[a-z-]+$ ]]; then
 	break
     else
 	echo "  Wrong format! Please try again.."
-	printf "Enter the servers FQDN (e.g. myserver.iwi.unibe.ch): "
+	printf "Enter the servers FQDN (e.g. myserver.com): "
     fi
 done
 
 echo "You've entered : $FQDN"
 
-printf "Enter your organization name (ORGNAME): [Universitaet Bern] "
-read ORGNAME
-[ -z $ORGNAME ] && ORGNAME="Universitaet Bern"
-echo $ORGNAME
+printf "Enter your organization name (O): [My Company] "
+read O
+[ -z $O ] && O="My Company"
+echo $O
+
+printf "Enter your Locality (L): [Bern] "
+read L
+[ -z $L ] && L="Bern"
+echo $L
+
+printf "Enter your State or Province (ST): [BE] "
+read ST
+[ -z $ST ] && ST="BE"
+echo $ST
 
 printf "Enter your Country (C): [CH] "
-read COUNTRY
-[ -z $COUNTRY ] && COUNTRY="CH"
-echo $COUNTRY
+read C
+[ -z $C ] && C="CH"
+echo $C
 
-
-printf "Enter a domain ALIAS (e.g. *.myserver.iwi.unibe.ch): "
+printf "Enter a domain ALIAS (e.g. *.myserver.com): "
 ALTNAMES="DNS:$FQDN"
 while read INPUT; do
     if [ -z $INPUT ]; then
@@ -42,7 +51,7 @@ while read INPUT; do
 	printf "Enter another domain ALIAS (e.g. myserver2.iwi.unibe.ch): "
     fi
 done
-sed "s/### FQDN ###/$FQDN/g; s/### ORGNAME ###/$ORGNAME/g; s/### ALTNAMES ###/$ALTNAMES/g; s/### COUNTRY ###/$COUNTRY/g" < request.cnf > out/$FQDN.cnf
+sed "s/### FQDN ###/$FQDN/g; s/### O ###/$O/g; s/### ALTNAMES ###/$ALTNAMES/g; s/### C ###/$C/g; s/### L ###/$L/g; s/### ST ###/$ST/g;" < request.cnf > out/$FQDN.cnf
 
 openssl req \
     -new \

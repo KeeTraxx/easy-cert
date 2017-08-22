@@ -7,8 +7,10 @@ req_extensions = req_ext
 
 [dn]
 CN=### FQDN ###
-C=### COUNTRY ###
-O=### ORGNAME ###
+C=### C ###
+O=### O ###
+L=### L ###
+ST=### ST ###
 
 [req_ext]
 subjectAltName = ### ALTNAMES ###
